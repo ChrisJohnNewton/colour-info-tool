@@ -161,11 +161,12 @@ const htmlColours = [
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 */
-const colourInfo = document.getElementById('colour-info-tool'),
-colourCodeLink = document.getElementById('colour-code-link'),
-colourCodeLinkSVG = document.querySelector('a[id="colour-code-link"] > svg > path'),
+const backgroundColour = document.getElementById('root'),
+// colourCodeLink = document.getElementById('colour-code-link'),
+// colourCodeLinkSVG = document.querySelector('a[id="colour-code-link"] > svg > path'),
 colourHeader = document.getElementById('colour-header'),
 colourLegend = document.getElementById('colour-legend'),
+projectReturn = document.getElementById('project-return'),
 colourInput = document.getElementById('colour-input'),
 colourChooser = document.getElementById('colour-chooser'),
 colourOutput = document.getElementById('colour-output');
@@ -270,19 +271,19 @@ function outputColourInfo(hex, rgb, name) {
     // Check the complementary colour is not the original colour.
     if (complementaryColour !== hex ) colourGrid += `<div style="background-color:#${complementaryColour};color:${setFontColour(...hexToRGB(complementaryColour))}">#${complementaryColour}</div>`
   });
-  colourOutput.innerHTML = `<div class="bb wfc g" style="width:280px;grid-template-columns:auto 1fr;grid-template-rows:repeat(6,22px)27px auto;grid-column-gap:20px;grid-row-gap:3px">
-                              <span class="l1">HTML Name*:</span> ${name}
-                              <span class="l1">HEX:</span> #${hex}
-                              <span class="l1">RGB:</span> ${rgb[0]}, ${rgb[1]}, ${rgb[2]}
-                              <span class="l1">HSL:</span> ${hsl[0]}°, ${hsl[1]}%, ${hsl[2]}%
-                              <span class="l1">HSV:</span> ${hsv[0]}°, ${hsv[1]}%, ${hsv[2]}%
-                              <span class="l1">CMYK:</span> ${cmyk[0]}%, ${cmyk[1]}%, ${cmyk[2]}%, ${cmyk[3]}%
-                              <span class="l1">Decimal:</span> ${decimal}
-                              <span class="l1" style="grid-column-end:span 2">Complementary Colours:</span>
-                              <div class="g tac" style="grid-template-columns:repeat(auto-fit,minmax(85px,1fr));grid-column-end:span 2;grid-gap:1px">
+  colourOutput.innerHTML = `<div style="width:fit-content;width:-moz-fit-content;display:grid;grid-template-columns:auto 1fr;grid-template-rows:repeat(6,22px)27px auto;grid-column-gap:15px;grid-row-gap:10px">
+                              <span style="font-weight:700;letter-spacing:1px;white-space:nowrap">HTML Name*:</span> <span style="white-space:nowrap">${name}</span>
+                              <span style="font-weight:700;letter-spacing:1px">HEX:</span> <span style="white-space:nowrap">#${hex}</span>
+                              <span style="font-weight:700;letter-spacing:1px">RGB:</span> <span style="white-space:nowrap">${rgb[0]}, ${rgb[1]}, ${rgb[2]}</span>
+                              <span style="font-weight:700;letter-spacing:1px">HSL:</span> <span style="white-space:nowrap">${hsl[0]}°, ${hsl[1]}%, ${hsl[2]}%</span>
+                              <span style="font-weight:700;letter-spacing:1px">HSV:</span> <span style="white-space:nowrap">${hsv[0]}°, ${hsv[1]}%, ${hsv[2]}%</span>
+                              <span style="font-weight:700;letter-spacing:1px">CMYK:</span> <span style="white-space:nowrap">${cmyk[0]}%, ${cmyk[1]}%, ${cmyk[2]}%, ${cmyk[3]}%</span>
+                              <span style="font-weight:700;letter-spacing:1px">Decimal:</span> <span style="white-space:nowrap">${decimal}</span>
+                              <span style="grid-column-end:span 2;font-weight:700;letter-spacing:1px">Complementary Colours:</span>
+                              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(85px,1fr));grid-column-end:span 2;grid-gap:1px;text-align:center">
                               ${colourGrid}
                               </div>
-                              <span style="grid-column-end:span 2;margin-top:15px" class="f13">* The closest HTML colour name based on its RGB values.</span>
+                              <span style="margin-top:15px;grid-column-end:span 2">* The closest HTML colour name based on its RGB values.</span>
                             </div>`;
 
   // Style surrounding HTML elements to improve readability.
@@ -305,25 +306,26 @@ function outputColourInfo(hex, rgb, name) {
 function improveReadability(r, g, b) {
 
   // Sets the background to the selected colour.
-  colourInfo.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+  backgroundColour.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
   // Finds the best contrast colour to improve readability (white or black).
   bestContrastColour = contrastColour(r, g, b);
 
   // If the background is white. If so, set to default style.
-  if (window.getComputedStyle(colourInfo).backgroundColor === "rgb(255, 255, 255)") {
-    colourCodeLink.style.color = "var(--secondaryColour)",
-    colourCodeLink.style.boxShadow = "inset 0.2em 0.2em 0.2em 0 #fff, inset 2px -2px 2px 0 var(--secondaryColour)",
-    colourCodeLinkSVG.setAttribute("fill", "var(--secondaryColour)"),
+  if (window.getComputedStyle(backgroundColour).backgroundColor === "rgb(255, 255, 255)") {
+    // colourCodeLink.style.color = "var(--secondaryColour)",
+    // colourCodeLink.style.boxShadow = "inset 0.2em 0.2em 0.2em 0 #fff, inset 2px -2px 2px 0 var(--secondaryColour)",
+    // colourCodeLinkSVG.setAttribute("fill", "var(--secondaryColour)"),
     colourHeader.style.textDecorationColor = "var(--mainColour)";
   // Otherwise, set to the best contrast colour.
   } else {
-    colourCodeLink.style.color = bestContrastColour,
-    colourCodeLink.style.boxShadow = `inset 0.2em 0.2em 0.2em 0 #fff, inset 2px -2px 2px 0 ${bestContrastColour}`,
-    colourCodeLinkSVG.setAttribute("fill", bestContrastColour),
+    // colourCodeLink.style.color = bestContrastColour,
+    // colourCodeLink.style.boxShadow = `inset 0.2em 0.2em 0.2em 0 #fff, inset 2px -2px 2px 0 ${bestContrastColour}`,
+    // colourCodeLinkSVG.setAttribute("fill", bestContrastColour),
     colourHeader.style.textDecorationColor = bestContrastColour;
   }
     colourHeader.style.color = bestContrastColour,
-    colourLegend.style.color = bestContrastColour;
+    colourLegend.style.color = bestContrastColour,
+    projectReturn.style.color = bestContrastColour;
 }
 
 /*
